@@ -27,6 +27,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.9.1") // For JSON parsing
     implementation("io.github.cdimascio:dotenv-kotlin:6.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.postgresql:postgresql:42.3.1")
 }
 
 compose.desktop {

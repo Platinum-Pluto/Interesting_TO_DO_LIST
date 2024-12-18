@@ -3,14 +3,15 @@ import java.time.LocalDateTime
 import java.util.Date
 
 data class itemsList(
-    var id : Int,
+    var id : String,
     var description : String,
-    var created : LocalDateTime = LocalDateTime.now()
+    val created : LocalDateTime
 )
 
 fun retrieveList() : List<itemsList>{
+    val i = LocalDateTime.now()
     return listOf<itemsList>(
-        itemsList(1, "Damn")
+        itemsList("dauduiwhuih", "Damn", i)
     );
 }
 

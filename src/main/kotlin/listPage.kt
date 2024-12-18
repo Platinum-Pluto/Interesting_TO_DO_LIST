@@ -8,7 +8,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -31,6 +33,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import java.time.format.DateTimeFormatter
 import java.time.LocalDateTime
 
@@ -39,14 +42,17 @@ import java.time.LocalDateTime
 @Composable
 
 fun listPage(todoModel: TodoModel){
-    val list = retrieveList()
+    //val list = retrieveList()
    // val list by todoModel.todoList.collectAsState()
    // val isLoading by todoModel.isLoading
+    //var list by remember { mutableStateOf(retrieveList()) }
+    var i = 0
+    var list = remember { mutableStateListOf<itemsList>().apply { addAll(retrieveList()) } }
 
 
     var userInput by remember { mutableStateOf("") }
 
-    
+
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -59,35 +65,65 @@ fun listPage(todoModel: TodoModel){
         ){
             OutlinedTextField(value = userInput, onValueChange = {
                 userInput = it
-            })
-            Button(onClick = {/*TODO*/}){
+
+            },
+                placeholder = {Text("Enter Challenge")}
+            )
+            Button(onClick = {
+                if(i == 0 && userInput.isNotBlank()){
+                    check(userInput)
+                    i++
+                }
+                if (userInput.isNotBlank()){
+                    list.add(
+                        itemsList(
+                            id = UUID.randomUUID().toString(),
+                            description = userInput,
+                            created = LocalDateTime.now()
+                        )
+                    )
+                }
+            }){
                 Text(text = "Add")
+
             }
         }
 
-        LazyColumn(
-            content = {
-                itemsIndexed(list){
-                    index: Int, item: itemsList ->
-                    Text(text = item.toString())
+        if (list.isEmpty()) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                text = "No items yet",
+                fontSize = 16.sp
+            )
+        } else {
+            LazyColumn {
+                itemsIndexed(list) { index: Int, item: itemsList ->
+                    listItems(item = item, onDelete = {
+                       // todoModel.deleteTodo(item)
+                        list.remove(item)
+                    })
                 }
             }
-        )
+        }
+
+
     }
 
-    
+
 }
 
 
 @Composable
-fun listItems(item: itemsList) {
+fun listItems(item: itemsList, onDelete : ()-> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clip(RoundedCornerShape(10))
             .background(MaterialTheme.colors.primary)
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
             modifier = Modifier.weight(1f)
@@ -111,9 +147,9 @@ fun listItems(item: itemsList) {
             )
 
         }
-        IconButton(onClick = { }){
+        IconButton(onClick = onDelete){
             Icon(
-                imageVector = Icons.Filled.Delete,
+                imageVector = Icons.Filled.Star,
                 contentDescription = "Delete",
                 tint = Color.White
             )
