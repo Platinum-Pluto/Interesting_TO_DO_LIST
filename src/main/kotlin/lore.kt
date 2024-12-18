@@ -1,23 +1,31 @@
+import kotlin.random.Random
 
 fun clickEvent(): Int {
-    //access db count column
-    //++count
-    var count = 0
+    val count = db_count()+1
+    db_UpdateCount(count)
     return count
 }
 
 fun buylore(): Int {
-//access count
-    //count--
-    var count = 0
-    return count
+    var count = db_count()
+    if(count >= 10){
+        count--
+        db_UpdateCount(count)
+        return count
+    }
+    else{
+        return count
+    }
+
 }
 
-fun unlockLore(): String{
+fun unlockLore(): Stories?{
     buylore()
     //access db stories
-    //pick random story
-    var story = ""
-    //remove story from stories column in db
-    return story
+    val stories = db_stories()
+    val rand = Random.nextInt(stories.size)
+    val story1 = stories[rand]
+    val id = story1.id
+    db_query("DELETE FROM stories WHERE id = '$id'")
+    return story1
 }

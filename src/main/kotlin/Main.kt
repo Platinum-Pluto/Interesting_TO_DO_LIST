@@ -18,6 +18,10 @@ import io.github.cdimascio.dotenv.dotenv
 import java.security.MessageDigest
 import java.util.*
 
+import java.sql.DriverManager
+
+
+
 fun main() = application {
 
     val todomodel = TodoModel()
@@ -36,11 +40,7 @@ fun main() = application {
     }
 
 
-  //  Window(onCloseRequest = ::exitApplication) {
-     //   App()
-  //  }
+    //  Window(onCloseRequest = ::exitApplication) {
+    //   App()
+    //  }
 }
-
-
-
-

@@ -36,12 +36,13 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import java.time.format.DateTimeFormatter
 import java.time.LocalDateTime
-
+import javax.swing.plaf.ProgressBarUI
 
 
 @Composable
 
 fun listPage(todoModel: TodoModel){
+    var progress by remember { mutableStateOf(0f) }
     //val list = retrieveList()
    // val list by todoModel.todoList.collectAsState()
    // val isLoading by todoModel.isLoading
@@ -52,29 +53,54 @@ fun listPage(todoModel: TodoModel){
 
     var userInput by remember { mutableStateOf("") }
 
-
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .padding(8.dp)
-    ){
-        Row (
-            modifier = Modifier.fillMaxWidth()
+            .padding(1.dp)
+    ) {
+        // Use Row to position Text and CircularProgressIndicator side by side
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween // Ensures proper spacing
+        ) {
+            Text(
+                text = "No items yet",
+                fontSize = 16.sp,
+                textAlign = TextAlign.Start, // Align the text to the start
+                modifier = Modifier.weight(1f) // Let Text take up remaining horizontal space
+            )
+
+            CircularProgressIndicator(
+                progress = progress,
+                color = Color.Red,
+                strokeWidth = 5.dp,
+                modifier = Modifier // Adjust size and placement
+                    .size(24.dp)
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
-        ){
-            OutlinedTextField(value = userInput, onValueChange = {
-                userInput = it
-
-            },
-                placeholder = {Text("Enter Challenge")}
+        ) {
+            OutlinedTextField(
+                value = userInput,
+                onValueChange = {
+                    userInput = it
+                },
+                placeholder = { Text("Enter Challenge") }
             )
             Button(onClick = {
-                if(i == 0 && userInput.isNotBlank()){
+                if (i == 0 && userInput.isNotBlank()) {
                     check(userInput)
                     i++
                 }
-                if (userInput.isNotBlank()){
+                if (userInput.isNotBlank()) {
                     list.add(
                         itemsList(
                             id = UUID.randomUUID().toString(),
@@ -83,9 +109,8 @@ fun listPage(todoModel: TodoModel){
                         )
                     )
                 }
-            }){
+            }) {
                 Text(text = "Add")
-
             }
         }
 
@@ -100,15 +125,16 @@ fun listPage(todoModel: TodoModel){
             LazyColumn {
                 itemsIndexed(list) { index: Int, item: itemsList ->
                     listItems(item = item, onDelete = {
-                       // todoModel.deleteTodo(item)
+                        // todoModel.deleteTodo(item)
+                        //clickEvent()
                         list.remove(item)
+                        progress += 0.3f
                     })
                 }
             }
         }
-
-
     }
+
 
 
 }
@@ -148,6 +174,7 @@ fun listItems(item: itemsList, onDelete : ()-> Unit) {
 
         }
         IconButton(onClick = onDelete){
+
             Icon(
                 imageVector = Icons.Filled.Star,
                 contentDescription = "Delete",
