@@ -1,8 +1,11 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.google.gson.JsonObject
@@ -81,7 +84,7 @@ fun clickEvent(x: Int, y: Int): Int {
     return x+y
 }
 
-fun Buylore(x: Int, y: Int): Int {
+fun buylore(x: Int, y: Int): Int {
     return x-y
 }
 
@@ -119,9 +122,10 @@ fun App() {
     //val apikey:String = System.getenv("APIKEY") ?: "Hello there!"
     val dotenv = dotenv()
     val apikey = dotenv["APIKEY"]
-    println(apikey)
+    var prompt = "Based on the description write a Achievement name based off of it for example The Carpenter from Germany and so on just like when game achievements when they unclock /n "
+    //println(apikey)
     //access the stories from a database and return the list
-    val result = genai("Who is Socrates?", apikey)
+    //val result = genai(prompt, apikey)
     // println(result)
     val stories = mutableListOf<String>()
 
@@ -129,6 +133,7 @@ fun App() {
     val history = mutableListOf<String>()
     var points: Int = 0
     history.add("Hello")
+    history.add("Yellow")
     //val i = 100/history.size
 
     var text by remember { mutableStateOf(history[0]) }
@@ -136,9 +141,9 @@ fun App() {
 
     MaterialTheme {
         Button(onClick = {
-            text = "Hello, Desktop!"
+            text = history[1]
         }) {
-            Text(result)
+            Text(text)
 
         }
     }
@@ -146,9 +151,25 @@ fun App() {
 
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
-        App()
+    val todomodel = TodoModel()
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "TODO LIST"
+    ){
+        MaterialTheme{
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colors.background
+            ) {
+                listPage(todomodel)
+            }
+        }
     }
+
+
+  //  Window(onCloseRequest = ::exitApplication) {
+     //   App()
+  //  }
 }
 
 

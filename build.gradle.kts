@@ -11,8 +11,10 @@ group = "com.example"
 version = "1.0-SNAPSHOT"
 
 repositories {
-    mavenCentral()
+
     google()
+    mavenCentral()
+
 }
 
 dependencies {
@@ -24,6 +26,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.google.code.gson:gson:2.9.1") // For JSON parsing
     implementation("io.github.cdimascio:dotenv-kotlin:6.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 }
 
 compose.desktop {
