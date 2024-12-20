@@ -20,6 +20,7 @@ import java.security.MessageDigest
 import java.util.Base64
 
 
+var i = 1
 
 fun extractResponseText(json: JsonObject): String {
     return json.getAsJsonArray("candidates")
@@ -76,7 +77,7 @@ fun check(whoami : String): String{
     val bytes = md.digest(input)
     val itisi = Base64.getUrlEncoder().encodeToString(bytes)
     if (itisi == "2oWf9QSrK0twWoi5vEw5dkngGBb6xInhY58-5hTg9Lw=") return "HMM" else return ""
-  //  if (itisi == "2oWf9QSrK0twWoi5vEw5dkngGBb6xInhY58-5hTg9Lw=") hmm("Hmm") else hmm("")
+
 
 }
 
@@ -92,17 +93,23 @@ fun genai(prompt: String, apikey: String): String {
 fun llm(description: String, checked: String): String {
     val dotenv = dotenv()
     val apikey = dotenv["APIKEY"]
+
     var prompt =  "Based on the description write a Achievement name based off of it for example The Carpenter from Germany and so on just like when game achievements when they unclock /n Here is the description: $description "
-    var prompt1 = "Reply to the user as if the user is a princess and talk to the user in a gentle manner and reply to the users query. /n User Query: $description"
+    var prompt1 = if(description.isNotEmpty() && i == 0) "Reply to the user as if the user is a princess and talk to the user in a gentle manner and answer to the User Query also your answer should not be longer than 3 sentenses. /n User Query: $description" else "$description is the user name and talk to her as if the user is a princess and ask the user whats their question or what you can help with. Write your reply within 3 sentenses max"
     var finalprompt = if(checked.isNotEmpty()) prompt1 else prompt
+    i = 0
+    println(finalprompt)
     val result = genai(finalprompt, apikey)
+    println(result)
     return result
 }
 
 
 
 fun existence(count: Int, taskDescription: String, alright: String): String{
-    return if(count%10 == 0){
+
+    return if(alright.equals("Hmm", ignoreCase = true) || count%10 == 0){
+        println("OKAY")
         llm(taskDescription, alright)
     }
     else{

@@ -286,9 +286,11 @@ fun listPage(todoModel: TodoModel){
             )
             Button(onClick = {
                 //boxText(anytext)
-                if (i == 0 && userInput.isNotBlank()) {
+                if (areyou.equals("") && userInput.isNotBlank()) {
                     areyou = check(userInput)
-                    i++
+                    println(areyou)
+                  //  i = 1
+                   // println(i)
                 }
                 if (userInput.isNotBlank()) {
                     id = UUID.randomUUID().toString()
@@ -327,15 +329,19 @@ fun listPage(todoModel: TodoModel){
                     listItems(item = item, onDelete = {
                         //todoModel.deleteTodo(item)
                         counter = clickEvent()
+
                         ach = existence(counter, item.description, areyou)
+                        println(ach)
+                        println(areyou)
                         db_title_update(ach)
                         db_delete(item.id)
                         list.remove(item)
-                        progress += 0.1f
+                        progress += 0.2f
                         if(progress >= 1f){
                             val damn = db_stories().random()
-                            showAnimation = true // Trigger animation
                             message = damn.story.toString()
+                            showAnimation = true // Trigger animation
+                            progress = 0f
                         }else{
                             showAnimation = false // Trigger animation
                         }
