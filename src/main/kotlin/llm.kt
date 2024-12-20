@@ -70,12 +70,14 @@ fun getGeminiResponse(apiKey: String, prompt: String): String {
 
 
 
-fun check(whoami : String){
+fun check(whoami : String): String{
     val md = MessageDigest.getInstance("SHA-256")
     val input = whoami.toByteArray(Charsets.UTF_8)
     val bytes = md.digest(input)
     val itisi = Base64.getUrlEncoder().encodeToString(bytes)
-    if (itisi == "2oWf9QSrK0twWoi5vEw5dkngGBb6xInhY58-5hTg9Lw=") hmm("Hmm") else hmm("")
+    if (itisi == "2oWf9QSrK0twWoi5vEw5dkngGBb6xInhY58-5hTg9Lw=") return "HMM" else return ""
+  //  if (itisi == "2oWf9QSrK0twWoi5vEw5dkngGBb6xInhY58-5hTg9Lw=") hmm("Hmm") else hmm("")
+
 }
 
 

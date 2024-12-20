@@ -32,47 +32,44 @@ val password = ""
 
 
 
-
-fun db_insert(id: String, description: String, created: String){
+// Functions
+fun db_insert(id: String, description: String, created: String) {
     val connection = DriverManager.getConnection(jdbcUrl, username, password)
     val statement = connection.createStatement()
-    val resultSet = statement.executeQuery("INSERT INTO tasks (id, description, created) VALUES ('$id', '$description', '$created')")
-    resultSet.close()
+    statement.executeUpdate("INSERT INTO tasks (id, description, created) VALUES ('$id', '$description', '$created')")
     statement.close()
     connection.close()
 }
 
-
-fun db_delete(id: String){
+fun db_delete(id: String) {
     val connection = DriverManager.getConnection(jdbcUrl, username, password)
     val statement = connection.createStatement()
-    val resultSet = statement.executeQuery("DELETE FROM tasks WHERE id = '$id'")
-    resultSet.close()
+    statement.executeUpdate("DELETE FROM tasks WHERE id = '$id'")
     statement.close()
     connection.close()
 }
 
-fun db_update(id: String, description: String, created: String){
+fun db_update(id: String, description: String, created: String) {
     val connection = DriverManager.getConnection(jdbcUrl, username, password)
     val statement = connection.createStatement()
-    val resultSet = statement.executeQuery("UPDATE tasks SET description = '$description', created = '$created' WHERE id = '$id'")
-    resultSet.close()
+    statement.executeUpdate("UPDATE tasks SET description = '$description', created = '$created' WHERE id = '$id'")
     statement.close()
     connection.close()
 }
 
-
-fun db_read(): List<User>{
+fun db_read(): List<User> {
     val connection = DriverManager.getConnection(jdbcUrl, username, password)
     val statement = connection.createStatement()
     val resultSet = statement.executeQuery("SELECT * FROM tasks")
+    val users = mutableListOf<User>() // Initialize locally to avoid accumulation across calls
     while (resultSet.next()) {
-        users.add(User(
-            id = resultSet.getString("id"),
-            description = resultSet.getString("description"),
-            created = resultSet.getString("created")
-        ))
-
+        users.add(
+            User(
+                id = resultSet.getString("id"),
+                description = resultSet.getString("description"),
+                created = resultSet.getString("created")
+            )
+        )
     }
     resultSet.close()
     statement.close()
@@ -80,52 +77,81 @@ fun db_read(): List<User>{
     return users
 }
 
-fun db_count(): Int{
+fun db_count(): Int {
     val connection = DriverManager.getConnection(jdbcUrl, username, password)
-    println("1")
-    println("Connected to the database successfully!")
-    println("1")
-    // Example query execution
     val statement = connection.createStatement()
-    val resultSet = statement.executeQuery("SELECT count FROM user")
-    val count = resultSet.getInt("count")
+    val resultSet = statement.executeQuery("SELECT COUNT(*) AS count FROM user")
+    val count = if (resultSet.next()) resultSet.getInt("count") else 0 // Handle empty result set
     resultSet.close()
     statement.close()
     connection.close()
     return count
 }
 
-
-fun db_UpdateCount(count: Int){
+fun db_UpdateCount(count: Int) {
     val connection = DriverManager.getConnection(jdbcUrl, username, password)
     val statement = connection.createStatement()
-    val resultSet = statement.executeQuery("UPDATE user SET count = '$count'")
-    resultSet.close()
+    statement.executeUpdate("UPDATE user SET count = $count")
     statement.close()
     connection.close()
 }
 
-fun db_query(query: String){
+fun db_query(query: String) {
     val connection = DriverManager.getConnection(jdbcUrl, username, password)
     val statement = connection.createStatement()
-    val resultSet = statement.executeQuery(query)
-    resultSet.close()
+    statement.execute(query) // Generic execution for any query
     statement.close()
     connection.close()
 }
 
-fun db_stories(): List<Stories>{
+fun db_stories(): List<Stories> {
     val connection = DriverManager.getConnection(jdbcUrl, username, password)
     val statement = connection.createStatement()
-    val resultSet = statement.executeQuery("SELECT * FROM tasks")
+    val resultSet = statement.executeQuery("SELECT * FROM stories")
+    val stories = mutableListOf<Stories>() // Initialize locally to avoid accumulation across calls
     while (resultSet.next()) {
-        story.add(Stories(
-            id = resultSet.getString("id"),
-            story = resultSet.getString("story")
-        ))
+        stories.add(
+            Stories(
+                id = resultSet.getString("id"),
+                story = resultSet.getString("story")
+            )
+        )
     }
     resultSet.close()
     statement.close()
     connection.close()
-    return story
+    return stories
 }
+
+fun db_title_update(arch: String) {
+    val connection = DriverManager.getConnection(jdbcUrl, username, password)
+    val statement = connection.createStatement()
+    statement.executeUpdate("INSERT INTO user (title) VALUES ('$arch')")
+    statement.close()
+    connection.close()
+}
+
+
+
+
+fun db_title(): String {
+    val connection = DriverManager.getConnection(jdbcUrl, username, password)
+    val statement = connection.createStatement()
+    val resultSet = statement.executeQuery("SELECT title FROM user ORDER BY title DESC LIMIT 1")
+
+    // Check if resultSet has any rows
+    val result: String = if (resultSet.next()) {
+        resultSet.getString("title") ?: "The Beginner" // Fetch title or default to "The Beginner"
+    } else {
+        "The Beginner" // Default value if the table is empty
+    }
+
+    resultSet.close()
+    statement.close()
+    connection.close()
+
+    return result
+}
+
+
+

@@ -8,10 +8,8 @@ data class itemsList(
     val created : LocalDateTime
 )
 
-fun retrieveList() : List<itemsList>{
-    val i = LocalDateTime.now()
-    return listOf<itemsList>(
-        itemsList("dauduiwhuih", "Damn", i)
-    );
+fun retrieveList(): List<User> {
+    return db_read()
 }
+
 

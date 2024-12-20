@@ -1,3 +1,4 @@
+import androidx.compose.runtime.Composable
 import kotlin.random.Random
 
 fun clickEvent(): Int {
